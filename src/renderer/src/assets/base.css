@@ -86,3 +86,19 @@ body {
     max-height: 100svh;
     display: flex;
 }
+
+.noDrag {
+    -webkit-app-region: no-drag !important;
+}
+
+#NoughtLogo {
+    background-image: url("./Nought_Notes.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent;
+    min-height: 40px;
+    height: 40px;
+    max-height: 40px;
+    aspect-ratio: 16/9;
+}
