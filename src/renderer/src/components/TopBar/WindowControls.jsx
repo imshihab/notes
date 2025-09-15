@@ -1,27 +1,28 @@
-import { useState, useEffect, memo } from "react";
+import { del } from "esmls"
+import { useState, useEffect, memo } from "react"
 
 const WindowControls = () => {
-    const [isMaximized, setIsMaximized] = useState(false);
+    const [isMaximized, setIsMaximized] = useState(false)
 
     useEffect(() => {
-        window.api.checkWindowState();
+        window.api.checkWindowState()
 
-        const onMaximized = () => setIsMaximized(true);
-        const onRestored = () => setIsMaximized(false);
+        const onMaximized = () => setIsMaximized(true)
+        const onRestored = () => setIsMaximized(false)
 
-        window.api.onWindowMaximized(onMaximized);
-        window.api.onWindowRestored(onRestored);
+        window.api.onWindowMaximized(onMaximized)
+        window.api.onWindowRestored(onRestored)
 
         return () => {
-            window.api.removeWindowMaximizedListener(onMaximized);
-            window.api.removeWindowRestoredListener(onRestored);
-        };
-    }, []);
+            window.api.removeWindowMaximizedListener(onMaximized)
+            window.api.removeWindowRestoredListener(onRestored)
+        }
+    }, [])
 
     const buttonBaseClasses =
-        "w-[32px] h-[32px] cursor-pointer flex items-center justify-center rounded-[8px] transition-color duration-300 ease-in-out";
+        "w-[32px] h-[32px] cursor-pointer flex items-center justify-center rounded-[8px] transition-color duration-300 ease-in-out"
 
-    const svgBaseClasses = "w-[16px] h-[16px]";
+    const svgBaseClasses = "w-[16px] h-[16px]"
 
     return (
         <div
@@ -30,7 +31,10 @@ const WindowControls = () => {
         >
             <button
                 className={`${buttonBaseClasses} bg-slate-200 text-slate-800 hover:bg-slate-300`}
-                onClick={() => {/* Add your settings handler here */ }}
+                onClick={() => {
+                    window.location.href = "/"
+                    del("isActive")
+                }}
                 aria-label="Settings"
             >
                 <svg
@@ -42,9 +46,7 @@ const WindowControls = () => {
                 </svg>
             </button>
 
-
             <div className="w-[2px] h-[24px] bg-slate-200 !ml-2 !mr-2"></div>
-
 
             <button
                 className={`${buttonBaseClasses} bg-slate-200 text-slate-800 hover:bg-slate-300`}
@@ -94,7 +96,7 @@ const WindowControls = () => {
                 </svg>
             </button>
         </div>
-    );
-};
+    )
+}
 
-export default memo(WindowControls);
+export default memo(WindowControls)
