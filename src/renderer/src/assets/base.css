@@ -207,3 +207,7 @@ body {
     margin: 10px 0 !important;
     margin-right: 24px !important;
 }
+
+.bg-sortActive {
+    background-color: #E2E0F9 !important;
+}

@@ -3,6 +3,7 @@ import { join } from "path"
 import fs from "node:fs"
 import { electronApp, optimizer, is } from "@electron-toolkit/utils"
 import icon from "../../resources/icon.png?asset"
+import DataBase from "./db"
 
 const initDatabase = async () => {
     const basePath = join(__dirname, "./../DataBase")
@@ -110,6 +111,7 @@ app.whenReady().then(async () => {
     app.on("activate", function () {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
+    DataBase()
 })
 
 app.on("window-all-closed", () => {

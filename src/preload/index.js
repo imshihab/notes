@@ -12,14 +12,22 @@ const api = {
     removeWindowRestoredListener: () => ipcRenderer.removeAllListeners("window-restored")
 }
 
+const folders = {
+    fetch: () => ipcRenderer.invoke("fetch_folders"),
+    onFoldersChanged: (callback) => ipcRenderer.on("folders-changed", callback),
+    removeFoldersChangedListener: () => ipcRenderer.removeAllListeners("folders-changed")
+}
+
 if (process.contextIsolated) {
     try {
         contextBridge.exposeInMainWorld("electron", electronAPI)
         contextBridge.exposeInMainWorld("api", api)
+        contextBridge.exposeInMainWorld("folders", folders)
     } catch (error) {
         console.error(error)
     }
 } else {
     window.electron = electronAPI
     window.api = api
+    window.folders = folders
 }
