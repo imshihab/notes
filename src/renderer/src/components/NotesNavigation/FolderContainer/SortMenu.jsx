@@ -20,7 +20,9 @@ const SortTypeButton = ({ selected, onClick, icon, children, type }) => {
         <button
             onClick={onClick}
             className={`w-full flex items-center gap-2 px-4 py-3 font-medium transition-all ${
-                selected ? "bg-[#526259] text-white" : "bg-white text-slate-800"
+                selected
+                    ? "bg-[#005CAC] text-white cursor-default"
+                    : "bg-white text-slate-800 cursor-pointer"
             } ${getBorderStyle()}`}
         >
             {icon}
@@ -33,7 +35,9 @@ const SortOrderButton = ({ selected, onClick, children }) => (
     <button
         onClick={onClick}
         className={`flex-1 flex items-center justify-center min-h-10  rounded-2xl font-medium transition ${
-            selected ? "bg-[#526259] text-white !rounded-2xl" : "bg-white text-slate-800"
+            selected
+                ? "bg-[#005CAC] text-white !rounded-2xl cursor-default"
+                : "bg-white text-slate-800 cursor-pointer"
         }`}
     >
         {children}

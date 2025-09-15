@@ -9,7 +9,7 @@ function App() {
             <SideBar />
             <div className="flex flex-col flex-1">
                 <TopBar />
-                <div className="flex flex-1 m-0 bg-[#f2faff]">
+                <div className="flex flex-1 m-0 bg-[#E9EEFA]">
                     <NotesNavigation />
                     {/* Will be removed */}
                     <main className="flex-1 px-3 flex items-center justify-center">

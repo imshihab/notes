@@ -19,7 +19,7 @@ const SearchInput = ({ value, onChange }) => {
             <input
                 type="text"
                 placeholder="Search Notes..."
-                className="w-full h-[48px] pl-[52px] pr-5 bg-slate-200 rounded-[24px] text-base placeholder:text-black/60 outline-none border-[1px] border-transparent transition-all duration-200 ease-in-out noDrag"
+                className="w-full h-[48px] pl-[52px] pr-5 bg-white rounded-[24px] text-base placeholder:text-black/60 outline-none border-[1px] border-transparent transition-all duration-200 ease-in-out noDrag"
                 value={value}
                 onChange={onChange}
             />
