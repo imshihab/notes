@@ -84,9 +84,22 @@ export default function DataBase() {
                 fs.mkdirSync(basePath, { recursive: true })
             }
 
+            // Block creation if same name exists in Trash
+            const trashPath = path.join(DataBasePath, "/Trash")
+            const trashedFolderPath = path.join(trashPath, name)
+            if (fs.existsSync(trashedFolderPath)) {
+                return {
+                    message: "Creation blocked: a folder with this name exists in Trash",
+                    status: "fail"
+                }
+            }
+
             if (!fs.existsSync(folderPath)) {
                 await fs.promises.mkdir(folderPath)
+
+                // Always create a new UID for new folders
                 const id = Math.random().toString(36).substring(2, 9)
+
                 fs.mkdirSync(path.join(folderPath, `uid_${id}`))
                 fs.mkdirSync(iconPath)
                 fs.mkdirSync(colorPath)
@@ -170,6 +183,15 @@ export default function DataBase() {
                 if (fs.existsSync(candidate)) {
                     return { status: "fail", message: "A folder with the new name already exists" }
                 }
+                // Block if same name exists in Trash
+                const trashPath = path.join(DataBasePath, "/Trash")
+                const trashedCandidate = path.join(trashPath, newName)
+                if (fs.existsSync(trashedCandidate)) {
+                    return {
+                        status: "fail",
+                        message: "Rename blocked: a folder with this name exists in Trash"
+                    }
+                }
                 await fs.promises.rename(oldFolderPath, candidate)
                 targetFolderPath = candidate
             }
@@ -210,6 +232,85 @@ export default function DataBase() {
 
             notifyFoldersChanged()
             return { status: "success", message: "Folder updated successfully" }
+        } catch (error) {
+            return { status: "fail", message: error?.message || String(error) }
+        }
+    })
+
+    ipcMain.handle("delete_folder", async (event, folderName, uid) => {
+        const folderPath = path.join(basePath, folderName)
+        const uidFolderPath = path.join(folderPath, `uid_${uid}`)
+        const trashPath = path.join(DataBasePath, "/Trash")
+
+        try {
+            if (!fs.existsSync(folderPath)) {
+                return { status: "fail", message: "Folder doesn't exist" }
+            }
+
+            if (!fs.existsSync(uidFolderPath)) {
+                return { status: "fail", message: "Folder doesn't exist" }
+            }
+
+            // Check if folder is empty (only contains system directories)
+            const entries = await fs.promises.readdir(folderPath)
+            const noteFiles = entries.filter(
+                (file) => file.startsWith("note_") && file.endsWith(".md")
+            )
+
+            if (noteFiles.length === 0) {
+                // Empty folder - delete directly
+                await fs.promises.rmdir(folderPath, { recursive: true })
+                notifyFoldersChanged()
+                return {
+                    status: "success",
+                    message: "Empty folder deleted successfully",
+                    isEmpty: true
+                }
+            } else {
+                // Non-empty folder - move to trash
+                if (!fs.existsSync(trashPath)) {
+                    await fs.promises.mkdir(trashPath, { recursive: true })
+                }
+
+                const trashFolderPath = path.join(trashPath, folderName)
+                if (fs.existsSync(trashFolderPath)) {
+                    // If folder already exists in trash, add timestamp
+                    const timestamp = Date.now()
+                    const newTrashPath = path.join(trashPath, `${folderName}_${timestamp}`)
+                    await fs.promises.rename(folderPath, newTrashPath)
+                } else {
+                    await fs.promises.rename(folderPath, trashFolderPath)
+                }
+
+                notifyFoldersChanged()
+                return {
+                    status: "success",
+                    message: `Folder moved to trash (${noteFiles.length} notes)`,
+                    isEmpty: false,
+                    noteCount: noteFiles.length
+                }
+            }
+        } catch (error) {
+            return { status: "fail", message: error?.message || String(error) }
+        }
+    })
+
+    ipcMain.handle("check_folder_empty", async (event, folderName, uid) => {
+        const folderPath = path.join(basePath, folderName)
+        const uidFolderPath = path.join(folderPath, `uid_${uid}`)
+        try {
+            if (!fs.existsSync(folderPath) || !fs.existsSync(uidFolderPath)) {
+                return { status: "fail", message: "Folder doesn't exist" }
+            }
+            const entries = await fs.promises.readdir(folderPath)
+            const noteFiles = entries.filter(
+                (file) => file.startsWith("note_") && file.endsWith(".md")
+            )
+            return {
+                status: "success",
+                isEmpty: noteFiles.length === 0,
+                noteCount: noteFiles.length
+            }
         } catch (error) {
             return { status: "fail", message: error?.message || String(error) }
         }

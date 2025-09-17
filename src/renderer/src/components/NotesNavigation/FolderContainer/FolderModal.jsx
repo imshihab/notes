@@ -40,8 +40,14 @@ const FolderModal = ({
             toast("Invalid folder name!", "error")
             return
         }
-        onSubmit({ name: folderName, icon: selectedIcon, color: selectedColor })
-        onClose()
+        const result = await onSubmit({
+            name: folderName,
+            icon: selectedIcon,
+            color: selectedColor
+        })
+        if (result && result.status === "success") {
+            onClose()
+        }
     }
 
     if (!isOpen) return null

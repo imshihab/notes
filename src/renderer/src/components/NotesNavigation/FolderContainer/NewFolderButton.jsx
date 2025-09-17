@@ -10,12 +10,12 @@ const NewFolderButton = memo(() => {
 
         if (result.status === "success") {
             toast(result.message)
-            setIsModalOpen(false)
         }
 
         if (result.status === "fail") {
             toast(result.message, "error")
         }
+        return result
     }
 
     return (

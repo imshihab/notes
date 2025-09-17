@@ -13,6 +13,8 @@ const FolderItem = ({ folder, setReload, isFirst, isLast, isSingle }) => {
     const [menuDimensions, setMenuDimensions] = useState({ width: 150, height: 100 })
     const navigate = useNavigate()
     const [isEditOpen, setIsEditOpen] = useState(false)
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+    const [deleteInfo, setDeleteInfo] = useState(null)
 
     useEffect(() => {
         if (contextMenu.show && menuRef.current) {
@@ -132,9 +134,30 @@ const FolderItem = ({ folder, setReload, isFirst, isLast, isSingle }) => {
                   </button>
                   <button
                       className="px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-2 cursor-pointer"
-                      onClick={() => {
-                          alert("Not Implemented Yet")
+                      onClick={async () => {
                           setContextMenu({ show: false, x: 0, y: 0 })
+                          try {
+                              const result = await window.folders.check(name, id)
+                              if (result.status === "fail") {
+                                  toast(result.message, "error")
+                                  return
+                              }
+                              if (result.isEmpty) {
+                                  // If empty, delete immediately
+                                  const del = await window.folders.delete(name, id)
+                                  if (del.status === "success") {
+                                      toast(del.message)
+                                  } else {
+                                      toast(del.message, "error")
+                                  }
+                              } else {
+                                  // Not empty: open confirmation modal
+                                  setDeleteInfo({ name, id, noteCount: result.noteCount })
+                                  setIsDeleteModalOpen(true)
+                              }
+                          } catch (error) {
+                              toast("Error checking folder", "error")
+                          }
                       }}
                   >
                       <svg
@@ -237,6 +260,68 @@ const FolderItem = ({ folder, setReload, isFirst, isLast, isSingle }) => {
                 title="Edit Folder"
                 submitLabel="Save Changes"
             />
+
+            {/* Delete Confirmation Modal */}
+            {isDeleteModalOpen &&
+                deleteInfo &&
+                createPortal(
+                    <div
+                        className="fixed inset-0 bg-black/40 flex items-center justify-center z-[9999]"
+                        onClick={() => setIsDeleteModalOpen(false)}
+                    >
+                        <div
+                            className="bg-[#f2faff] flex flex-col gap-4 rounded-[24px] p-6 w-[90%] max-w-[400px] shadow-lg animate-fadeIn"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <h2 className="text-[24px] font-[500] text-[#242a31] bg-white px-3 py-2 rounded-xl font-sans">
+                                Delete Folder
+                            </h2>
+
+                            <div className="bg-white p-4 rounded-xl">
+                                <p className="text-gray-700 mb-2">
+                                    The folder "<strong>{deleteInfo.name}</strong>" contains{" "}
+                                    <strong>{deleteInfo.noteCount} notes</strong>.
+                                </p>
+                                <p className="text-gray-600 text-sm">
+                                    This folder will be moved to the Trash folder instead of being
+                                    permanently deleted.
+                                </p>
+                            </div>
+
+                            <div className="flex justify-end gap-4 mt-4">
+                                <button
+                                    onClick={() => setIsDeleteModalOpen(false)}
+                                    className="px-4 py-2 rounded-[24px] hover:bg-gray-100 cursor-pointer"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={async () => {
+                                        try {
+                                            const result = await window.folders.delete(
+                                                deleteInfo.name,
+                                                deleteInfo.id
+                                            )
+                                            if (result.status === "success") {
+                                                toast(result.message)
+                                                setIsDeleteModalOpen(false)
+                                                setDeleteInfo(null)
+                                            } else {
+                                                toast(result.message, "error")
+                                            }
+                                        } catch (error) {
+                                            toast("Error deleting folder", "error")
+                                        }
+                                    }}
+                                    className="px-5 py-2 rounded-[24px] font-medium text-white bg-red-600 hover:bg-red-700 cursor-pointer"
+                                >
+                                    Move to Trash
+                                </button>
+                            </div>
+                        </div>
+                    </div>,
+                    document.body
+                )}
         </div>
     )
 }

@@ -18,7 +18,9 @@ const folders = {
     removeFoldersChangedListener: () => ipcRenderer.removeAllListeners("folders-changed"),
     create: (folderData) => ipcRenderer.invoke("create_folder", folderData),
     toggleFolderPin: (folderName, uid) => ipcRenderer.invoke("toggle_folder_pin", folderName, uid),
-    update: (payload) => ipcRenderer.invoke("update_folder", payload)
+    update: (payload) => ipcRenderer.invoke("update_folder", payload),
+    delete: (folderName, uid) => ipcRenderer.invoke("delete_folder", folderName, uid),
+    check: (folderName, uid) => ipcRenderer.invoke("check_folder_empty", folderName, uid)
 }
 
 if (process.contextIsolated) {
