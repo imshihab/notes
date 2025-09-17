@@ -1,15 +1,17 @@
 import React from "react"
 import NavItem from "./NavItem"
 import { get, set } from "esmls"
-import { useNavigate } from "react-router"
 
-export default function Sidebar() {
+export default function Sidebar({ setShowNotesNav }) {
     return (
         <div className="w-20 min-w-20 max-w-20 h-screen min-h-screen max-h-screen m-0 p-2 pb-14 gap-10 flex flex-col items-center bg-[#E9EEFA]">
             <nav className="w-20 min-w-20 max-w-20 flex flex-col items-center gap-6">
                 <button
                     onClick={() => {
-                        alert("will be added")
+                        setShowNotesNav((prev) => {
+                            set("showNotesNavigation", !prev)
+                            return !prev
+                        })
                     }}
                     className="w-12 min-w-12 max-w-12 h-12 min-h-12 max-h-12 m-0 p-3 border-none outline-none hover:bg-black/[0.073] hover:cursor-pointer rounded-lg transition-colors duration-200"
                 >
@@ -72,7 +74,7 @@ export default function Sidebar() {
                     label="Locked"
                     inactivePath="M720-240q25 0 42.5-17.5T780-300q0-25-17.5-42.5T720-360q-25 0-42.5 17.5T660-300q0 25 17.5 42.5T720-240Zm0 120q30 0 56-14t43-39q-23-14-48-20.5t-51-6.5q-26 0-51 6.5T621-173q17 25 43 39t56 14ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80ZM490-80H240q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v52q-18-6-37.5-9t-42.5-3v-40H240v400h212q8 24 16 41.5T490-80Zm230 40q-83 0-141.5-58.5T520-240q0-83 58.5-141.5T720-440q83 0 141.5 58.5T920-240q0 83-58.5 141.5T720-40ZM240-560v400-400Z"
                     activePath="M360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80ZM720-40q-83 0-141.5-58.5T520-240q0-83 58.5-141.5T720-440q83 0 141.5 58.5T920-240q0 83-58.5 141.5T720-40ZM490-80H240q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v52q-20-7-40-9.5t-40-2.5q-117 0-198.5 81.5T440-240q0 43 13.5 83.5T490-80Zm230-160q25 0 42.5-17.5T780-300q0-25-17.5-42.5T720-360q-25 0-42.5 17.5T660-300q0 25 17.5 42.5T720-240Zm0 120q30 0 56-14t43-39q-23-14-48-20.5t-51-6.5q-26 0-51 6.5T621-173q17 25 43 39t56 14Z"
-                    viewBox="0 0 24 24"
+                    viewBox="0 -960 960 960"
                 />
             </nav>
         </div>

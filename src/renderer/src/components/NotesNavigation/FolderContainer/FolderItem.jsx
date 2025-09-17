@@ -3,9 +3,10 @@ import { useNavigate } from "react-router"
 import { createPortal } from "react-dom"
 import toast from "../../Helper/toast"
 import { set } from "esmls"
+import { iconOptions } from "./IconColor"
 
 const FolderItem = ({ folder, setReload, isFirst, isLast, isSingle }) => {
-    const { name, id, Pinned, icon } = folder
+    const { name, id, Pinned, icon, color } = folder
     const [contextMenu, setContextMenu] = useState({ show: false, x: 0, y: 0 })
     const menuRef = useRef(null)
     const [menuDimensions, setMenuDimensions] = useState({ width: 150, height: 100 })
@@ -162,6 +163,9 @@ const FolderItem = ({ folder, setReload, isFirst, isLast, isSingle }) => {
         if (isLast) return "rounded-b-xl rounded-t-[6px]"
         return "rounded-[6px]"
     }
+    const { icon: Icon } =
+        iconOptions.find((opt) => opt.id === icon) ||
+        iconOptions.find((opt) => opt.id === "default")
 
     return (
         <div role="treeitem" className="overflow-hidden min-h-[64px]">
@@ -182,15 +186,7 @@ const FolderItem = ({ folder, setReload, isFirst, isLast, isSingle }) => {
             >
                 <div className="flex items-center w-full gap-3 min-w-0 flex-1 min-[inline-size:1px]">
                     <span className="inline-flex items-center justify-center flex-shrink-0 w-12 h-12 bg-[#E8E8E8] rounded-xl">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="#5E5E5E"
-                        >
-                            <path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z" />
-                        </svg>
+                        <Icon size="24" color={color} />
                     </span>
                     <span className="flex-1 whitespace-nowrap text-ellipsis overflow-hidden text-left text-[#1B1B1B] text-[16px] leading-[22px] font-[system-ui] font-normal">
                         {name}

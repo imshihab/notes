@@ -113,7 +113,7 @@ const SortMenu = memo(({ sortBy, setSortBy, sortOrder, setSortOrder }) => {
     }
 
     return (
-        <div className="absolute right-0 top-full mt-1 bg-[#f2faff] rounded-2xl shadow-[0_5px_15px_rgba(0,0,0,0.35)] py-3 px-4 w-56 z-10 flex flex-col gap-3">
+        <div className="absolute right-0 top-full !mt-1 bg-[#f2faff] rounded-2xl shadow-[0_5px_15px_rgba(0,0,0,0.35)] py-3 px-4 w-56 z-10 flex flex-col gap-3">
             <div className="text-2xl text-slate-800 font-medium">Sort by</div>
 
             <div className="flex flex-col gap-0.5">

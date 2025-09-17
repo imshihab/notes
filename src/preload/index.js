@@ -15,7 +15,8 @@ const api = {
 const folders = {
     fetch: () => ipcRenderer.invoke("fetch_folders"),
     onFoldersChanged: (callback) => ipcRenderer.on("folders-changed", callback),
-    removeFoldersChangedListener: () => ipcRenderer.removeAllListeners("folders-changed")
+    removeFoldersChangedListener: () => ipcRenderer.removeAllListeners("folders-changed"),
+    create: (folderData) => ipcRenderer.invoke("create_folder", folderData)
 }
 
 if (process.contextIsolated) {

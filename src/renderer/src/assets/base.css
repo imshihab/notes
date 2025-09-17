@@ -208,6 +208,30 @@ body {
     margin-right: 24px !important;
 }
 
-.bg-sortActive {
-    background-color: #E2E0F9 !important;
+@keyframes growX {
+    from {
+        transform: translateX(-50%) scaleX(0.3);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(-50%) scaleX(1);
+        opacity: 1;
+    }
+}
+
+.nav-item-active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    height: 100%;
+    width: 56px;
+    background-color: #E8DEF8;
+    border-radius: 24px;
+    z-index: 0;
+
+    transform-origin: center;
+    animation: growX 0.7s ease-in-out forwards;
 }

@@ -2,15 +2,17 @@ import React, { useState, memo } from "react"
 import TopBar from "./components/TopBar"
 import SideBar from "./components/SideBar"
 import NotesNavigation from "./components/NotesNavigation"
+import { get } from "esmls"
 
 function App() {
+    const [showNotesNav, setShowNotesNav] = useState(get("showNotesNavigation", { default: true }))
     return (
         <>
-            <SideBar />
+            <SideBar setShowNotesNav={setShowNotesNav} />
             <div className="flex flex-col flex-1">
                 <TopBar />
                 <div className="flex flex-1 m-0 bg-[#E9EEFA]">
-                    <NotesNavigation />
+                    <NotesNavigation showNotesNav={showNotesNav} />
                     {/* Will be removed */}
                     <main className="flex-1 px-3 flex items-center justify-center">
                         <div className="max-w-[900px] w-full mx-auto bg-white rounded-t-[24px] min-h-[calc(100vh-64px)] p-6 flex items-center justify-center">
