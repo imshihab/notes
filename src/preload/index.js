@@ -16,7 +16,8 @@ const folders = {
     fetch: () => ipcRenderer.invoke("fetch_folders"),
     onFoldersChanged: (callback) => ipcRenderer.on("folders-changed", callback),
     removeFoldersChangedListener: () => ipcRenderer.removeAllListeners("folders-changed"),
-    create: (folderData) => ipcRenderer.invoke("create_folder", folderData)
+    create: (folderData) => ipcRenderer.invoke("create_folder", folderData),
+    toggleFolderPin: (folderName, uid) => ipcRenderer.invoke("toggle_folder_pin", folderName, uid)
 }
 
 if (process.contextIsolated) {

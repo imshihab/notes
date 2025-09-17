@@ -84,11 +84,7 @@ const FolderItem = ({ folder, setReload, isFirst, isLast, isSingle }) => {
                   <button
                       className="px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-2 cursor-pointer"
                       onClick={async () => {
-                          const result = await window.folders.pinFolder(name, id)
-
-                          if (result.status === "success") {
-                              setReload((pre) => pre + 1)
-                          }
+                          const result = await window.folders.toggleFolderPin(name, id)
 
                           if (result.status === "fail") {
                               toast(result.message, "error")

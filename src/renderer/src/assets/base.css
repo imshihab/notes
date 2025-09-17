@@ -233,5 +233,5 @@ body {
     z-index: 0;
 
     transform-origin: center;
-    animation: growX 0.7s ease-in-out forwards;
+    animation: growX 0.25s ease-in-out forwards;
 }

@@ -107,4 +107,40 @@ export default function DataBase() {
             }
         }
     })
+
+    ipcMain.handle("toggle_folder_pin", async (event, folderName, uid) => {
+        const FolderPath = path.join(basePath, folderName)
+        const uidFolderPath = path.join(FolderPath, `uid_${uid}`)
+        const pinnedPath = path.join(FolderPath, "Pinned")
+
+        if (!fs.existsSync(uidFolderPath)) {
+            return {
+                status: "fail",
+                message: `${folderName} with id:[${uid}] folder not found`
+            }
+        }
+
+        try {
+            if (!fs.existsSync(pinnedPath)) {
+                await fs.promises.mkdir(pinnedPath)
+                notifyFoldersChanged()
+                return {
+                    status: "success",
+                    message: "Folder pinned successfully"
+                }
+            } else {
+                await fs.promises.rmdir(pinnedPath, { recursive: true })
+                notifyFoldersChanged()
+                return {
+                    status: "success",
+                    message: "Folder unpinned successfully"
+                }
+            }
+        } catch (error) {
+            return {
+                status: "fail",
+                message: `Error pinning folder: ${error.message}`
+            }
+        }
+    })
 }
