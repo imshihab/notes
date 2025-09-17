@@ -143,4 +143,75 @@ export default function DataBase() {
             }
         }
     })
+
+    ipcMain.handle("update_folder", async (event, payload) => {
+        const { id, oldName, name: newName, icon: newIcon, color: newColor } = payload || {}
+        try {
+            if (!oldName || !id) {
+                return { status: "fail", message: "Missing folder identifiers" }
+            }
+
+            const oldFolderPath = path.join(basePath, oldName)
+            if (!fs.existsSync(oldFolderPath)) {
+                return { status: "fail", message: "Folder doesn't exist" }
+            }
+
+            // Ensure UID folder exists and matches
+            const uidFolderPath = path.join(oldFolderPath, `uid_${id}`)
+            if (!fs.existsSync(uidFolderPath)) {
+                return { status: "fail", message: "Folder doesn't exist" }
+            }
+
+            let targetFolderPath = oldFolderPath
+
+            // Rename folder if name changed
+            if (newName && newName !== oldName) {
+                const candidate = path.join(basePath, newName)
+                if (fs.existsSync(candidate)) {
+                    return { status: "fail", message: "A folder with the new name already exists" }
+                }
+                await fs.promises.rename(oldFolderPath, candidate)
+                targetFolderPath = candidate
+            }
+
+            // Helper to find a single directory in folder by prefix
+            const findDirByPrefix = async (folderPath, prefix) => {
+                const entries = await fs.promises.readdir(folderPath)
+                const match = entries.find((e) => e.startsWith(prefix))
+                return match ? path.join(folderPath, match) : null
+            }
+
+            // Rename icon directory if needed
+            if (typeof newIcon === "string" && newIcon.length > 0) {
+                const currentIconDir = await findDirByPrefix(targetFolderPath, "icon_")
+                const desiredIconDir = path.join(targetFolderPath, `icon_${newIcon}`)
+                if (currentIconDir && currentIconDir !== desiredIconDir) {
+                    await fs.promises.rename(currentIconDir, desiredIconDir)
+                } else if (!currentIconDir) {
+                    if (!fs.existsSync(desiredIconDir)) {
+                        await fs.promises.mkdir(desiredIconDir)
+                    }
+                }
+            }
+
+            // Rename color directory if needed
+            if (typeof newColor === "string" && newColor.length > 0) {
+                const colorHex = newColor.startsWith("#") ? newColor.slice(1) : newColor
+                const currentColorDir = await findDirByPrefix(targetFolderPath, "color_")
+                const desiredColorDir = path.join(targetFolderPath, `color_${colorHex}`)
+                if (currentColorDir && currentColorDir !== desiredColorDir) {
+                    await fs.promises.rename(currentColorDir, desiredColorDir)
+                } else if (!currentColorDir) {
+                    if (!fs.existsSync(desiredColorDir)) {
+                        await fs.promises.mkdir(desiredColorDir)
+                    }
+                }
+            }
+
+            notifyFoldersChanged()
+            return { status: "success", message: "Folder updated successfully" }
+        } catch (error) {
+            return { status: "fail", message: error?.message || String(error) }
+        }
+    })
 }

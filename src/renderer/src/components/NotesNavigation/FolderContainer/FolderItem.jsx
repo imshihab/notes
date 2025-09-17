@@ -4,6 +4,7 @@ import { createPortal } from "react-dom"
 import toast from "../../Helper/toast"
 import { set } from "esmls"
 import { iconOptions } from "./IconColor"
+import FolderModal from "./FolderModal"
 
 const FolderItem = ({ folder, setReload, isFirst, isLast, isSingle }) => {
     const { name, id, Pinned, icon, color } = folder
@@ -11,6 +12,7 @@ const FolderItem = ({ folder, setReload, isFirst, isLast, isSingle }) => {
     const menuRef = useRef(null)
     const [menuDimensions, setMenuDimensions] = useState({ width: 150, height: 100 })
     const navigate = useNavigate()
+    const [isEditOpen, setIsEditOpen] = useState(false)
 
     useEffect(() => {
         if (contextMenu.show && menuRef.current) {
@@ -113,7 +115,7 @@ const FolderItem = ({ folder, setReload, isFirst, isLast, isSingle }) => {
                   <button
                       className="px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-2 cursor-pointer"
                       onClick={async () => {
-                          setIsModalOpen(true)
+                          setIsEditOpen(true)
                           setContextMenu({ show: false, x: 0, y: 0 })
                       }}
                   >
@@ -125,13 +127,13 @@ const FolderItem = ({ folder, setReload, isFirst, isLast, isSingle }) => {
                           <path d="M21,11.11C20.92,11.11 20.72,11.21 20.62,11.31L19.62,12.31L21.72,14.42L22.72,13.41C22.92,13.21 22.92,12.81 22.72,12.61L21.42,11.31C21.32,11.21 21.22,11.11 21,11.11M19.12,12.91L13,18.92V21H15.12L21.22,14.92L19.12,12.91M21,8V8.11L19,10.11V8H3V18H11V20H3A2,2 0 0,1 1,18V6C1,4.91 1.9,4 3,4H9L11,6H19C20.12,6 21,6.91 21,8Z" />
                       </svg>
                       <span className="leading-6 font-normal text-sm tracking-[0.25px] text-[rgba(0,0,0,0.87)]">
-                          Rename Folder
+                          Edit Folder
                       </span>
                   </button>
                   <button
                       className="px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-2 cursor-pointer"
                       onClick={() => {
-                          setIsDeleteModalOpen(true)
+                          alert("Not Implemented Yet")
                           setContextMenu({ show: false, x: 0, y: 0 })
                       }}
                   >
@@ -202,6 +204,39 @@ const FolderItem = ({ folder, setReload, isFirst, isLast, isSingle }) => {
                 </div>
             </button>
             {contextMenuElement}
+            <FolderModal
+                isOpen={isEditOpen}
+                onClose={() => setIsEditOpen(false)}
+                onSubmit={async ({ name: newName, icon: newIcon, color: newColor }) => {
+                    try {
+                        if (typeof window.folders.update === "function") {
+                            const result = await window.folders.update({
+                                id,
+                                oldName: name,
+                                name: newName,
+                                icon: newIcon,
+                                color: newColor
+                            })
+                            if (result?.status === "success") {
+                                toast(result.message)
+                                setIsEditOpen(false)
+                                return
+                            }
+                            if (result?.status === "fail") {
+                                toast(result.message || "Failed to update folder", "error")
+                                return
+                            }
+                        } else {
+                            toast("Folder update not implemented yet.", "error")
+                        }
+                    } catch (error) {
+                        toast(error?.message || "Error updating folder", "error")
+                    }
+                }}
+                initialData={{ name, icon: icon || "default", color: color || "#5E5E5E" }}
+                title="Edit Folder"
+                submitLabel="Save Changes"
+            />
         </div>
     )
 }
