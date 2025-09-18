@@ -84,16 +84,6 @@ export default function DataBase() {
                 fs.mkdirSync(basePath, { recursive: true })
             }
 
-            // Block creation if same name exists in Trash
-            const trashPath = path.join(DataBasePath, "/Trash")
-            const trashedFolderPath = path.join(trashPath, name)
-            if (fs.existsSync(trashedFolderPath)) {
-                return {
-                    message: "Creation blocked: a folder with this name exists in Trash",
-                    status: "fail"
-                }
-            }
-
             if (!fs.existsSync(folderPath)) {
                 await fs.promises.mkdir(folderPath)
 
@@ -183,15 +173,6 @@ export default function DataBase() {
                 if (fs.existsSync(candidate)) {
                     return { status: "fail", message: "A folder with the new name already exists" }
                 }
-                // Block if same name exists in Trash
-                const trashPath = path.join(DataBasePath, "/Trash")
-                const trashedCandidate = path.join(trashPath, newName)
-                if (fs.existsSync(trashedCandidate)) {
-                    return {
-                        status: "fail",
-                        message: "Rename blocked: a folder with this name exists in Trash"
-                    }
-                }
                 await fs.promises.rename(oldFolderPath, candidate)
                 targetFolderPath = candidate
             }
@@ -240,7 +221,6 @@ export default function DataBase() {
     ipcMain.handle("delete_folder", async (event, folderName, uid) => {
         const folderPath = path.join(basePath, folderName)
         const uidFolderPath = path.join(folderPath, `uid_${uid}`)
-        const trashPath = path.join(DataBasePath, "/Trash")
 
         try {
             if (!fs.existsSync(folderPath)) {
@@ -267,25 +247,12 @@ export default function DataBase() {
                     isEmpty: true
                 }
             } else {
-                // Non-empty folder - move to trash
-                if (!fs.existsSync(trashPath)) {
-                    await fs.promises.mkdir(trashPath, { recursive: true })
-                }
-
-                const trashFolderPath = path.join(trashPath, folderName)
-                if (fs.existsSync(trashFolderPath)) {
-                    // If folder already exists in trash, add timestamp
-                    const timestamp = Date.now()
-                    const newTrashPath = path.join(trashPath, `${folderName}_${timestamp}`)
-                    await fs.promises.rename(folderPath, newTrashPath)
-                } else {
-                    await fs.promises.rename(folderPath, trashFolderPath)
-                }
-
+                // Non-empty folder - delete permanently
+                await fs.promises.rmdir(folderPath, { recursive: true })
                 notifyFoldersChanged()
                 return {
                     status: "success",
-                    message: `Folder moved to trash (${noteFiles.length} notes)`,
+                    message: `Folder permanently deleted (${noteFiles.length} notes)`,
                     isEmpty: false,
                     noteCount: noteFiles.length
                 }
