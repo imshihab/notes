@@ -83,48 +83,50 @@ const FolderContextMenu = ({ isOpen, position, onClose, folder, onEdit, onDelete
     return createPortal(
         <div
             ref={menuRef}
-            className="fixed bg-white flex flex-col rounded-xl shadow-[0_5px_15px_rgba(0,0,0,0.35)] min-w-[144px] py-2 z-50"
+            className="fixed bg-[#E9EEFA] flex flex-col gap-2 rounded-xl shadow-[0_5px_15px_rgba(0,0,0,0.35)] !min-w-[192px] px-2 py-3 z-50"
             style={{ top: position.y, left: position.x }}
         >
+            <div className="flex flex-col gap-0.5">
+                <button
+                    className="px-4 py-3 text-left bg-white rounded-tl-2xl rounded-tr-2xl rounded-bl-sm rounded-br-sm flex items-center gap-3 cursor-pointer"
+                    onClick={handleTogglePin}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5">
+                        <path
+                            d={
+                                Pinned
+                                    ? "M8,6.2V4H7V2H17V4H16V12L18,14V16H17.8L14,12.2V4H10V8.2L8,6.2M20,20.7L18.7,22L12.8,16.1V22H11.2V16H6V14L8,12V11.3L2,5.3L3.3,4L20,20.7M8.8,14H10.6L9.7,13.1L8.8,14Z"
+                                    : "M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12M8.8,14L10,12.8V4H14V12.8L15.2,14H8.8Z"
+                            }
+                        />
+                    </svg>
+                    <span className="leading-6 font-normal text-sm tracking-[0.25px] text-[rgba(0,0,0,0.87)]">
+                        {Pinned ? "Unpin Folder" : "Pin Folder"}
+                    </span>
+                </button>
+                <button
+                    className="px-4 py-3 text-left bg-white rounded-bl-2xl rounded-br-2xl rounded-tl-sm rounded-tr-sm flex items-center gap-3 cursor-pointer"
+                    onClick={handleEdit}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5">
+                        <path d="M21,11.11C20.92,11.11 20.72,11.21 20.62,11.31L19.62,12.31L21.72,14.42L22.72,13.41C22.92,13.21 22.92,12.81 22.72,12.61L21.42,11.31C21.32,11.21 21.22,11.11 21,11.11M19.12,12.91L13,18.92V21H15.12L21.22,14.92L19.12,12.91M21,8V8.11L19,10.11V8H3V18H11V20H3A2,2 0 0,1 1,18V6C1,4.91 1.9,4 3,4H9L11,6H19C20.12,6 21,6.91 21,8Z" />
+                    </svg>
+                    <span className="leading-6 font-normal text-sm tracking-[0.25px] text-[rgba(0,0,0,0.87)]">
+                        Edit Folder
+                    </span>
+                </button>
+            </div>
             <button
-                className="px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-2 cursor-pointer"
-                onClick={handleTogglePin}
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5">
-                    <path
-                        d={
-                            Pinned
-                                ? "M8,6.2V4H7V2H17V4H16V12L18,14V16H17.8L14,12.2V4H10V8.2L8,6.2M20,20.7L18.7,22L12.8,16.1V22H11.2V16H6V14L8,12V11.3L2,5.3L3.3,4L20,20.7M8.8,14H10.6L9.7,13.1L8.8,14Z"
-                                : "M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12M8.8,14L10,12.8V4H14V12.8L15.2,14H8.8Z"
-                        }
-                    />
-                </svg>
-                <span className="leading-6 font-normal text-sm tracking-[0.25px] text-[rgba(0,0,0,0.87)]">
-                    {Pinned ? "Unpin Folder" : "Pin Folder"}
-                </span>
-            </button>
-            <button
-                className="px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-2 cursor-pointer"
-                onClick={handleEdit}
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5">
-                    <path d="M21,11.11C20.92,11.11 20.72,11.21 20.62,11.31L19.62,12.31L21.72,14.42L22.72,13.41C22.92,13.21 22.92,12.81 22.72,12.61L21.42,11.31C21.32,11.21 21.22,11.11 21,11.11M19.12,12.91L13,18.92V21H15.12L21.22,14.92L19.12,12.91M21,8V8.11L19,10.11V8H3V18H11V20H3A2,2 0 0,1 1,18V6C1,4.91 1.9,4 3,4H9L11,6H19C20.12,6 21,6.91 21,8Z" />
-                </svg>
-                <span className="leading-6 font-normal text-sm tracking-[0.25px] text-[rgba(0,0,0,0.87)]">
-                    Edit Folder
-                </span>
-            </button>
-            <button
-                className="px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-2 cursor-pointer"
+                className="px-4 py-3 text-left bg-white rounded-2xl flex items-center gap-3 cursor-pointer"
                 onClick={handleDelete}
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
+                    viewBox="0 -960 960 960"
                     className="w-5 h-5"
                     fill="oklch(0.577 0.245 27.325)"
                 >
-                    <path d="M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19M8,9H16V19H8V9M15.5,4L14.5,3H9.5L8.5,4H5V6H19V4H15.5Z" />
+                    <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
                 </svg>
                 <span className="leading-6 font-normal text-sm tracking-[0.25px] text-red-600">
                     Delete Folder
