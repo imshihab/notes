@@ -26,7 +26,7 @@ const FolderButton = ({ folder, isFirst, isLast, isSingle, onContextMenu }) => {
                 set("isActive", { name: name, uid: id })
                 navigate(`/Folder/${id}`)
             }}
-            className={`all-unset cursor-pointer w-full px-3 pr-3 h-16 text-base font-normal font-[Helvetica Neue] flex items-center transition-colors duration-300 bg-white hover:bg-[#e4e4e47e] ${getBorderRadiusClass()}`}
+            className={`all-unset cursor-pointer w-full px-3 pr-3 h-16 text-base font-normal font-[Helvetica Neue] flex items-center transition-colors duration-300 bg-white hover:bg-[#E9F1F8] ${getBorderRadiusClass()}`}
             onContextMenu={onContextMenu}
         >
             <div className="flex items-center w-full gap-3 min-w-0 flex-1 min-[inline-size:1px]">

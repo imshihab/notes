@@ -211,7 +211,7 @@ body {
 @keyframes growX {
     from {
         transform: translateX(-50%) scaleX(0.3);
-        opacity: 0;
+        opacity: 0.7;
     }
 
     to {

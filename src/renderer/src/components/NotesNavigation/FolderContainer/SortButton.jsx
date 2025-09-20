@@ -7,8 +7,10 @@ const SortButton = memo(
             <div className="relative sort-dropdown">
                 <button
                     onClick={() => setShowSortMenu((prev) => !prev)}
-                    className={`inline-flex items-center border-0 rounded-tl-[12px] rounded-bl-[12px] rounded-br-[4px] box-border cursor-pointer fill-[rgb(60,64,67)] h-9 min-w-[2.75rem] justify-center select-none px-2 ${
-                        showSortMenu ? "bg-[#005cac] text-white rounded-2xl" : "bg-white"
+                    className={`inline-flex items-center border-0 rounded-tl-[12px] rounded-bl-[12px] rounded-br-[4px]  rounded-tr-[4px] box-border cursor-pointer fill-[rgb(60,64,67)] h-9 min-w-[2.75rem] justify-center select-none px-2 ${
+                        showSortMenu
+                            ? "bg-[#005cac] text-white !rounded-2xl  !rounded-br-[4px]"
+                            : "bg-white"
                     }`}
                     aria-label="Sort folders"
                 >
